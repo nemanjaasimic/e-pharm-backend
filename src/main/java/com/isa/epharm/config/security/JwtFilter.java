@@ -1,6 +1,8 @@
 package com.isa.epharm.config.security;
 
 import com.isa.epharm.model.enumeration.Role;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +27,7 @@ import java.util.UUID;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtTokenUtil;
-    
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -40,8 +42,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (Exception ex) {
-            log.error("Could not set user authentication in security context", ex);
+        } catch (ExpiredJwtException e) {
+            log.debug("Access token expired. User: {}. Message: {}", e.getClaims().getSubject(), e.getMessage());
+            returnUnauthorizedResponse(response, "Access token is expired!");
+        } catch (JwtException e) {
+            log.debug("Access token invalid. Message: {}", e.getMessage());
+            returnUnauthorizedResponse(response, "Access token is invalid!");
         }
 
         filterChain.doFilter(request, response);
@@ -53,5 +59,15 @@ public class JwtFilter extends OncePerRequestFilter {
             return bearerToken.substring("Bearer ".length());
         }
         return null;
+    }
+
+    private void returnUnauthorizedResponse(HttpServletResponse httpServletResponse, String message) throws IOException {
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE");
+
+        httpServletResponse.setContentType("application/json");
+        httpServletResponse.setCharacterEncoding("UTF-8");
+
+        httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
     }
 }

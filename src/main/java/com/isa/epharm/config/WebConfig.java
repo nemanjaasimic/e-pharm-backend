@@ -1,5 +1,6 @@
 package com.isa.epharm.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -16,13 +17,10 @@ import static org.springframework.http.HttpMethod.*;
 @EnableWebMvc
 @ComponentScan
 @Configuration
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    private CustomProperties customProperties;
-
-    public WebConfig(CustomProperties customProperties) {
-        this.customProperties = customProperties;
-    }
+    private final CustomProperties customProperties;
 
     @Bean
     public CorsFilter corsFilter() {

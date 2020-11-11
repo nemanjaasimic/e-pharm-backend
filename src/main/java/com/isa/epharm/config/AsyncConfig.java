@@ -1,5 +1,6 @@
 package com.isa.epharm.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -9,13 +10,10 @@ import java.util.concurrent.Executor;
 
 @Configuration
 @EnableAsync
+@RequiredArgsConstructor
 public class AsyncConfig implements AsyncConfigurer {
 
     private final CustomProperties customProperties;
-
-    public AsyncConfig(CustomProperties customProperties) {
-        this.customProperties = customProperties;
-    }
 
     @Override
     public Executor getAsyncExecutor() {

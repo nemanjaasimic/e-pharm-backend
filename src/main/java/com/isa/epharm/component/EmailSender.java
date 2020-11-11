@@ -1,5 +1,6 @@
 package com.isa.epharm.component;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -12,15 +13,11 @@ import javax.mail.internet.MimeMessage;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class EmailSender {
+
     private final JavaMailSender javaMailSender;
-
     private final TemplateEngine templateEngine;
-
-    public EmailSender(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
-        this.javaMailSender = javaMailSender;
-        this.templateEngine = templateEngine;
-    }
 
     @Async
     public void send(String to, String subject, String templateName, Context context) {

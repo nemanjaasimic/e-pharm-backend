@@ -1,5 +1,6 @@
 package com.isa.epharm.config.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,20 +17,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private UserDetailsServiceImpl userDetailsServiceImpl;
-
-    private JwtAuthEntryPoint unauthorizedHandler;
-
-    private JwtFilter jwtFilter;
-
-    public WebSecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl, JwtAuthEntryPoint unauthorizedHandler, JwtFilter jwtFilter) {
-        this.userDetailsServiceImpl = userDetailsServiceImpl;
-        this.unauthorizedHandler = unauthorizedHandler;
-        this.jwtFilter = jwtFilter;
-    }
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final JwtAuthEntryPoint unauthorizedHandler;
+    private final JwtFilter jwtFilter;
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
